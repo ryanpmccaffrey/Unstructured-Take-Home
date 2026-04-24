@@ -1,0 +1,91 @@
+doc_name,question,gt_answer,generated_answer,page_recall@5,layout_recall@5,token_f1,fuzzy_match,llm_judge,cited_chunks
+PH_2016.06.08_Economy-Final,"According to the report, how do 5% of the Latinos see economic upward mobility for their children?",Less well-off,"According to the report, **5% of Latinos see their children as being ""less well off""** financially than they themselves are now, representing a pessimistic view of economic upward mobility for their children.",True,False,0.0588,0.1143,1,[PH_2016.06.08_Economy-Final_page4_chunk1]
+PH_2016.06.08_Economy-Final,"According to the report, which one is greater in population in the survey? Foreign born Latinos, or the Latinos interviewed by cellphone?",Latinos interviewed by cellphone,"Based on the provided context, the Latinos interviewed by cellphone (1,051) represent a greater number than the foreign born Latinos (795) in the survey sample.",True,True,0.2759,0.3459,1,[PH_2016.06.08_Economy-Final_page18_chunk0]|[PH_2016.06.08_Economy-Final_page18_chunk1]|[PH_2016.06.08_Economy-Final_page18_chunk2]
+PH_2016.06.08_Economy-Final,"From this report, which subgroup among Hispanics has gained most confidence from 2008 to 2015? ",Some college or more,"## Answer
+
+Based on the report, **Latinos ages 18-29** gained the most confidence from 2008 to 2015. This age group showed a **+27 percentage point increase**, rising from 21% in 2008 to 48% in 2015 — the largest change among all Hispanic subgroups analyzed. As the report notes, this was ""more than double the share who had a similarly positive view of their finances"" in 2008.",False,False,0.0294,0.0856,0,[PH_2016.06.08_Economy-Final_page9_chunk1]|[PH_2016.06.08_Economy-Final_page9_chunk2]
+PH_2016.06.08_Economy-Final,"Among all 12 references in this report, how many are from its own research center?",8,"Based on the provided context, I can see a reference to Pew Research Center in one chunk, which describes it as a nonpartisan fact tank. However, the context does not contain sufficient information to identify all 12 references in the report or determine how many are from its own research center. The chunks provided are from two different documents (a research paper about citation evaluation and a Pew Research Center report), and neither provides a complete reference list that would allow me to answer this question accurately.
+
+I cannot determine the answer to this question from the provided context alone.",True,True,0.0,0.0,0,[PH_2016.06.08_Economy-Final_page1_chunk0]
+PH_2016.06.08_Economy-Final,"According to this report, among the Hispanics shaped by four current personal financial situation, which situation involves the highest percentage that expects their future financial situation to get a lot worse?",Poor Financial Condition,"Based on the chart showing future financial expectations among Hispanics shaped by current personal financial situation, the **Poor financial condition** group has the highest percentage expecting their future financial situation to get a lot worse, at **8%**.",True,False,0.15,0.1765,1,[PH_2016.06.08_Economy-Final_page15_chunk1]
+PH_2016.06.08_Economy-Final,"According to this report, from 2014 to 2015, one group has the most significant drop of percentage of households claiming their income was falling behind cost of living.
+Which group is this, and what is the percentage droped?","['White', '10%']","## Answer
+
+Based on the data provided, the **White** group had the most significant drop in the percentage of households claiming their income was ""falling behind"" the cost of living.
+
+From 2014 to 2015:
+- White adults went from **59%** to **49%**, a drop of **10 percentage points**
+
+For comparison, the other groups had smaller drops:
+- Black adults: 55% → 51% (drop of 4 percentage points)
+- Hispanic adults: 53% → 53% (no change)
+
+This is also confirmed by the text, which states that ""whites reported some improvement in their family income relative to the cost of living across the one-year time period.""",True,True,0.04,0.0281,1,[PH_2016.06.08_Economy-Final_page10_chunk1]|[PH_2016.06.08_Economy-Final_page11_chunk0]
+0e94b4197b10096b1f4c699701570fbf,Where was Gestalt psychology concieved?,Berlin School of Experimental Psychology,Gestalt psychology was conceived in the **Berlin School of Experimental Psychology**.,True,True,0.625,0.6667,1,[0e94b4197b10096b1f4c699701570fbf_page1_chunk0]|[0e94b4197b10096b1f4c699701570fbf_bridge_0-1]
+0e94b4197b10096b1f4c699701570fbf,According to the chart on page 14 how much time was spent with family and friends in 2010?,21%,"Based on the chart showing ""Time spent on weekends,"" in 2010, **21%** of time was spent with family and friends, which was a decrease from 35% in 2005.",True,True,0.069,0.0284,1,[0e94b4197b10096b1f4c699701570fbf_page13_chunk0]
+0e94b4197b10096b1f4c699701570fbf,What range does red color represents in approximate distance from the Mississippi River in the chart that tracks the West NIle Virus in Europe?,0-375 miles,"Based on the provided context, in the West Nile Virus map, the **red color represents 0 - 375 miles** approximate distance from the Mississippi River.",True,True,0.0769,0.1316,1,[0e94b4197b10096b1f4c699701570fbf_page9_chunk1]|[0e94b4197b10096b1f4c699701570fbf_bridge_9-10]
+0e94b4197b10096b1f4c699701570fbf,How does this document define the law of good gestalt?,"Elements of objects tend to be perceptually grouped together if they form a pattern that is regular, simple, and orderly.","## Definition of the Law of Good Gestalt
+
+According to the document, the **Law of Good Gestalt** states that elements of objects tend to be perceptually grouped together if they form a pattern that is **regular, simple, and orderly**. This law implies that as individuals perceive the world, they eliminate complexity and unfamiliarity in order to observe reality in its most simplistic form. By eliminating extraneous stimuli, the mind is able to create meaning.
+
+The meaning created through perception implies a **global regularity**, which is often mentally prioritized over spatial relations. The law focuses on the concept of **conciseness**, which is described as the foundation of all gestalt theory.",True,True,0.3125,0.2972,1,0e94b4197b10096b1f4c699701570fbf_page10_chunk0|0e94b4197b10096b1f4c699701570fbf_bridge_9-10
+0e94b4197b10096b1f4c699701570fbf,Which category has the most increase from 2005 to 2010 for time spent on weedends?,Eating out,"## Answer
+
+Based on the data provided, **Watching films** had the most increase from 2005 to 2010 for time spent on weekends. It went from **20% in 2005** to **22% in 2010**, an increase of 2 percentage points. However, **Fitness** showed the most dramatic increase, going from **5% in 2005** to **17% in 2010**, representing a **12 percentage point increase** — making it the category with the greatest increase over that period.",True,True,0.0,0.0404,0,[0e94b4197b10096b1f4c699701570fbf_page13_chunk0]|[0e94b4197b10096b1f4c699701570fbf_bridge_12-13]|[0e94b4197b10096b1f4c699701570fbf_bridge_13-14]
+0e94b4197b10096b1f4c699701570fbf,Which continent has the most number of registered participant for advanced science course in CTBTO?,Europe,"Based on the provided context, the infographic from chunk [0e94b4197b10096b1f4c699701570fbf_page12_chunk1] shows a world map with the distribution of registered participants by region for what appears to be a CTBTO advanced science course. The numbers shown on the map are:
+
+- **Europe**: 130 (the largest bubble, located in the Europe/central region)
+- Asia: 80
+- Africa: 77
+- North America: 43
+- South America: 20 (and smaller numbers of 9 and 8)
+- Oceania/Middle East: 28 and 30
+
+**Europe** has the most registered participants with **130**.",True,True,0.025,0.0234,1,0e94b4197b10096b1f4c699701570fbf_page12_chunk1
+0e94b4197b10096b1f4c699701570fbf,Which shapes does the slide use to illustrate the closure aspect of Gestalt Principle of Visual Perception?,"['Circle', 'Rectangle']","The slide illustrates the closure aspect of the Gestalt Principle of Visual Perception using two shapes drawn with **dashed lines**: a **circle** on the left and a **rectangle** on the right. Both shapes are incomplete (outlined with dashes rather than solid lines), demonstrating how our perception fills in the visual gaps to perceive them as whole shapes.",True,False,0.0678,0.0899,1,[0e94b4197b10096b1f4c699701570fbf_page7_chunk0]|[0e94b4197b10096b1f4c699701570fbf_page7_chunk1]
+2310.05634v2,"In figure 1, which relation arrows do not point to specific leaf nodes?","['movement', 'birth', 'place of birth', 'member']","Based on the provided context, there is no ""Figure 1"" with relation arrows pointing to leaf nodes described in any of the chunks. The context does not contain a figure matching this description. The only hierarchical/tree-like diagram present is an icon in chunk [2024.ug.eprospectus_page12_chunk5], which shows a parent node connected to three child nodes, but it does not involve ""relation arrows"" or distinguish between leaf and non-leaf nodes in the way the question implies.
+
+I cannot answer this question based solely on the provided context, as no relevant Figure 1 with relation arrows is described.",False,False,0.0198,0.0801,0,2024.ug.eprospectus_page12_chunk5
+2310.05634v2,"In figure 5, what is the color of the line that has no intersection with any other line?",red,"Based on the image in the context, I can observe the multi-line graph. Looking carefully at the lines in figure 5, the **teal/cyan** (turquoise) line appears to stay consistently at the bottom of the chart without intersecting any other lines throughout the months shown (June through December), remaining distinctly separate from all other lines.",False,False,0.0,0.0119,0,[0e94b4197b10096b1f4c699701570fbf_page4_chunk0]
+2310.05634v2,"How many tables include ""F1"" as a metric?",3,"Based on the provided context, I can identify tables that include ""F1"" as a metric:
+
+1. The table in [2310.05634v2_page6_chunk3] includes ""F1."" as a column header.
+
+That is the only **table** (as opposed to graphs/images) that explicitly includes ""F1"" as a metric. (The images in [2310.05634v2_page7_chunk0] and [2310.05634v2_page7_chunk2] show F1_Score in line graphs, but these are images, not tables.)
+
+**Answer: 1 table includes ""F1"" as a metric.**",True,True,0.0,0.0049,0,2310.05634v2_page6_chunk3
+2310.05634v2,"From the paper, which temperature gives ChatGPT the highest alignment score?",0.1,"Based on the provided context, among the ChatGPT temperature settings tested (0.1, 0.5, and 0.9), **temperature 0.1** gives ChatGPT the highest alignment score of **85.9**.
+
+From the table in chunk [2310.05634v2_page6_chunk0]:
+- ChatGPT (0.1): Alignment = **85.9**
+- ChatGPT (0.5): Alignment = 84.5
+- ChatGPT (0.9): Alignment = 84.1",True,True,0.0455,0.014,1,2310.05634v2_page6_chunk0
+2310.05634v2,"For dataset construction, which step takes the most word to describe than the others. ",Evolutionary Question Generation,"Based on the provided context, the **Evolutionary Question Generation** step takes the most words to describe compared to the other two steps (Person Selection and Name Disambiguation). The context dedicates an entire appendix section (A.3) to explaining this step in detail, covering the iterative process, knowledge selection scoring (specificity and coherence), the mathematical formula for scoring, and the use of LLMs to extend paragraphs and generate questions. In contrast, Person Selection and Name Disambiguation are only briefly mentioned as using ""SPARQL queries to select related people from human written sentences and identify their identity in WikiData.""",True,True,0.0606,0.0943,1,[2310.05634v2_page2_chunk0]|[2310.05634v2_page12_chunk0]|[2310.05634v2_page12_chunk1]
+2310.05634v2,"According to author's definition on conscious incompetence, when can a sentence map to both [NA] and a list of sub-graph knowledge?",If it can be partially verified by the knowledge graph G,"According to the author's definition, a sentence can map to both [NA] and a list of sub-graph knowledge when it can be **partially verified by the knowledge graph G**. In other words, when some of the knowledge in the sentence exists in the knowledge graph (allowing for sub-graph citations) but other parts of the knowledge are absent from the graph (requiring [NA] to indicate the knowledge gap).",True,False,0.2564,0.2575,1,[2310.05634v2_bridge_1-2]
+honor_watch_gs_pro,What is the time on the gallery screenshot when demostrating how to set galley watch faces?,10:08AM,"The time shown on the gallery screenshot when demonstrating how to set gallery watch faces is **10:08 AM** (with the date ""FRI 18"").",True,False,0.0,0.0938,1,[honor_watch_gs_pro_page40_chunk0]|[honor_watch_gs_pro_bridge_37-38]|[honor_watch_gs_pro_bridge_39-40]
+honor_watch_gs_pro,What is the color on the watch that shows the aerobic zone?,yellow,"Based on the image provided, the **yellow/gold color** on the watch indicates the **Aerobic zone**. This can be seen at the top of the circular display where the yellow segment is highlighted and the label ""Aerobic"" appears in a yellow banner.",True,True,0.0476,0.0511,1,[honor_watch_gs_pro_page22_chunk1]
+honor_watch_gs_pro,What are the colors of the icons that the users touch to move the app up and remove the app respectively?,"['gray', 'red']","Based on the provided context, the icon to **move the app up** to the top of the list is **gray** (an upward arrow icon), and the icon to **remove the app** from the list is **red** (a minus/circle icon).",True,True,0.0976,0.0851,1,[honor_watch_gs_pro_page15_chunk1]
+honor_watch_gs_pro,How many distinct button functions are there during a workout?,5,"Based on the provided context, there are **7 distinct button/interaction functions** during a workout:
+
+1. **Press the Up button** → Lock/unlock, mute, or end workout
+2. **Press the Down button** → Switch screen
+3. **Press and hold the Up button** → Finish the workout
+4. **Press and hold the Down button** → Wake up the voice assistant
+5. **Swipe up or down on the screen** → Switch screen
+6. **Swipe left or right on the screen** → Switch screen
+7. **Touch and hold the screen** → Show a different data type",True,True,0.0235,0.0044,0,[honor_watch_gs_pro_page11_chunk3]|[honor_watch_gs_pro_bridge_11-12]
+honor_watch_gs_pro,"If ""--"" is displayed as the resting heart rate reading, what kind of environment should the user stay in?",a quiet and relaxed environment ,"If ""--"" is displayed as the resting heart rate reading, the user should stay in a **quiet and relaxed environment** while awake. It is also recommended to measure the resting heart rate immediately after waking up in the morning for the most accurate result.",True,False,0.2083,0.223,1,[honor_watch_gs_pro_bridge_23-24]|[honor_watch_gs_pro_page24_chunk0]
+2024.ug.eprospectus,Which groups of applicants have the lastest end of application period according to this brochure?,"[""Singapore-Cambridge GCE 'A' Level"", 'International Baccalaureate (IB) Diploma']","Based on the provided context, the groups of applicants with the **latest end of application period** are those applying for:
+
+1. **Bursary AY2024** – ending **15 August 2024**
+2. **Tuition Fee Loan** – deadline **before 15 August 2024**
+
+Both of these schemes have the latest closing dates compared to all other schemes listed, which either ended on 31 July 2024, vary by programme, or are open throughout the year.",True,False,0.0,0.1187,0,[2024.ug.eprospectus_page25_chunk2]
+2024.ug.eprospectus,"Among the top 10 reasons why NTU smart campus is for you, which is the reason that does not include any person in the corresponding figure?",Most Beautiful Campus,"Based on the context, looking at the top 10 reasons why NTU Smart Campus is for you, **Reason #9 - ""Most Beautiful Campus""** is the one that does not include any person in its corresponding figure. The image for reason #9 shows an aerial/bird's-eye view of the university campus buildings and grounds, with no people visible — only the architectural and landscape features of the campus.",True,True,0.0896,0.1077,1,[2024.ug.eprospectus_page2_chunk0]
+2024.ug.eprospectus,Student from which major has a picture of playing badminton in this brochure?,Medicine,"Based on the provided context, I cannot find any image showing a student playing badminton in this brochure. The images described in the context include a student from **Biological Sciences and Psychology** holding a tablet ([2024.ug.eprospectus_page13_chunk0]), ranking charts, icons, and infographics — but none depict badminton.
+
+The closest relevant content is the **Sport Science & Management (SSM)** programme description [2024.ug.eprospectus_page17_chunk3], which is the only sport-related programme mentioned, but no badminton image is described in the provided context.
+
+The provided context does not contain sufficient information to answer this question.",False,False,0.0,0.0187,0,[2024.ug.eprospectus_page17_chunk3]
+2024.ug.eprospectus,Which colleges/schools/institutes from NTU use year 3 students as cover page student model?,"['College of Engineering', 'Nanyang Business School', 'National Institute of Education']","Based on the provided context, there is no information about which colleges/schools/institutes from NTU use year 3 students as cover page student models. The context does not contain any details about cover page student models or their year of study.",False,False,0.04,0.1734,0,None
+2024.ug.eprospectus,"How many schools from College of Humanities, Arts, and Social Sciences are not individually introduced in detail?",3,"Based on the provided context, I cannot find specific information about how many schools from the College of Humanities, Arts, and Social Sciences (CoHASS) are not individually introduced in detail. The context only briefly mentions CoHASS in the bridge chunk, noting it is ""home to some 6,000 undergraduate and graduate students"" and offers various programmes, but does not provide a list or breakdown of its constituent schools or indicate which ones receive detailed introductions versus which do not.",True,False,0.0,0.0,0,[2024.ug.eprospectus_bridge_10-11]
