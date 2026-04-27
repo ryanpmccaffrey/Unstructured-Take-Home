@@ -313,16 +313,6 @@ The biggest jump in **Page Recall** came from the Planner-Executor's query rewri
 
 Overall, I believe the Planner-Executor routing approach is preferred over the ReAct approach because it achieves comparable retrieval and answer quality with lower expected token usage and latency.  
 
-**Per-modality breakdown** (latest run):
-
-| Type | N | Page R@5 | Layout R@5 | Cited Page | Cited Layout | LLM Judge |
-|---|---|---|---|---|---|---|
-| Chart | 9 | 88.9% | 77.8% | 100% | 88.9% | 88.9% |
-| Figure | 5 | 80.0% | 80.0% | 100% | 80.0% | 80.0% |
-| Pure-text | 8 | 100% | 50.0% | 100% | 62.5% | 87.5% |
-| Table | 4 | 100% | 50.0% | 100% | 50.0% | 75.0% |
-| Generalized-text (Layout) | 2 | 50% | 0% | 100% | 0% | 0% |
-
 ---
 ## Future Improvements
 
