@@ -4,17 +4,14 @@ import pandas as pd
 
 from src.config import ANNOTATIONS_PATH, LAYOUTS_PATH, PAGES_PATH, SUBSET_SIZE
 
-
-EXCLUDED_DOCS: set[str] = {"news_combined"}
-
 # When non-empty, load_subset uses exactly these documents instead of random sampling.
 # Set to the original 5 baseline documents for reproducible comparisons.
 INCLUDED_DOCS: set[str] = {
-    "PH_2016.06.08_Economy-Final",
-    "0e94b4197b10096b1f4c699701570fbf",
-    "2310.05634v2",
-    "honor_watch_gs_pro",
-    "2024.ug.eprospectus",
+    "PH_2016.06.08_Economy-Final",  # Research report
+    "0e94b4197b10096b1f4c699701570fbf",  # Tutorial/Workshop
+    "2310.05634v2",  # Academic paper
+    "honor_watch_gs_pro",  # Guidebook
+    "2024.ug.eprospectus",  # Brochure
 }
 
 
@@ -32,7 +29,8 @@ def load_subset(seed: int = 42) -> tuple[list[dict], pd.DataFrame, pd.DataFrame]
 
     if INCLUDED_DOCS:
         selected = [
-            row for _, row in annotations.iterrows()
+            row
+            for _, row in annotations.iterrows()
             if row["doc_name"].removesuffix(".pdf") in INCLUDED_DOCS
         ]
     else:
@@ -52,7 +50,7 @@ def load_subset(seed: int = 42) -> tuple[list[dict], pd.DataFrame, pd.DataFrame]
             guaranteed.append(rows[0])
             leftover.extend(rows[1:])
         rng.shuffle(leftover)
-        selected = (guaranteed + leftover)[: SUBSET_SIZE]
+        selected = (guaranteed + leftover)[:SUBSET_SIZE]
 
     selected_docs: list[dict] = []
     for row in selected:
@@ -72,7 +70,11 @@ def load_subset(seed: int = 42) -> tuple[list[dict], pd.DataFrame, pd.DataFrame]
     layouts_df = pd.read_parquet(LAYOUTS_PATH)
 
     selected_names = {d["doc_name"] for d in selected_docs}
-    pages_df = pages_df[pages_df["doc_name"].isin(selected_names)].reset_index(drop=True)
-    layouts_df = layouts_df[layouts_df["doc_name"].isin(selected_names)].reset_index(drop=True)
+    pages_df = pages_df[pages_df["doc_name"].isin(selected_names)].reset_index(
+        drop=True
+    )
+    layouts_df = layouts_df[layouts_df["doc_name"].isin(selected_names)].reset_index(
+        drop=True
+    )
 
     return selected_docs, pages_df, layouts_df
