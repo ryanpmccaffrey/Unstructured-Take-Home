@@ -1,3 +1,5 @@
+.PHONY: install format ingest eval
+
 install:
 	uv sync
 
