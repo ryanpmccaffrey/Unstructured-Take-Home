@@ -1,0 +1,254 @@
+doc_name,question_type,question,gt_answer,generated_answer,page_recall@5,layout_recall@5,cited_page_grounded,cited_layout_grounded,token_f1,fuzzy_match,llm_judge,exact_containment,cited_chunks
+PH_2016.06.08_Economy-Final,Chart,"According to the report, how do 5% of the Latinos see economic upward mobility for their children?",Less well-off,"According to the report, **5% of Latinos see their children as being ""less well off""** financially than they themselves are now. This is shown in a pie chart on page 4, where respondents were asked whether their children will be better or worse off financially in their lifetime. The results were:
+
+- **72%** said their children will be **better off**
+- **16%** said their children will be **about the same**
+- **5%** said their children will be **less well off**
+
+So only a small minority (5%) hold a pessimistic view of their children's economic upward mobility.",True,False,True,True,0.0211,0.0454,1,False,PH_2016.06.08_Economy-Final_page4_layout41|PH_2016.06.08_Economy-Final_page4_layout36|PH_2016.06.08_Economy-Final_page4_layout40
+PH_2016.06.08_Economy-Final,Table,"According to the report, which one is greater in population in the survey? Foreign born Latinos, or the Latinos interviewed by cellphone?",Latinos interviewed by cellphone,"Based on the report's data, **Latinos interviewed by cellphone (1,051)** is the greater population compared to **foreign-born Latinos (795)** in the survey.
+
+Specifically:
+- **Foreign-born Latinos** (excluding Puerto Rico): **795** respondents
+- **Latinos interviewed by cellphone**: **1,051** respondents
+
+The cellphone-interviewed group is larger by 256 respondents.",True,True,True,False,0.1667,0.1798,1,True,PH_2016.06.08_Economy-Final_page18_layout130|PH_2016.06.08_Economy-Final_page18_layout133
+PH_2016.06.08_Economy-Final,Chart,"From this report, which subgroup among Hispanics has gained most confidence from 2008 to 2015? ",Some college or more,"Based on the retrieved data, the answer is clear. According to the bar chart on page 9 of the report, which tracks the percentage of Latinos who say their personal financial situation is in ""excellent"" or ""good"" shape:
+
+The **Ages 18–29** subgroup among Hispanics/Latinos gained the most confidence from 2008 to 2015, with a **+27 percentage point increase** — going from 21% in 2008 to 48% in 2015. This was more than double the share who had a positive view of their finances in 2008, and it was the largest gain of any Latino demographic subgroup tracked in the report.
+
+This surpassed other subgroups such as Foreign born (+18), Female (+18), U.S. born (+17), Some college or more (+17), and all other age and gender groups.",True,False,False,False,0.062,0.0569,0,True,PH_2016.06.08_Economy-Final_page9_layout72|PH_2016.06.08_Economy-Final_page9_layout73
+PH_2016.06.08_Economy-Final,Pure-text (Plain-text),"Among all 12 references in this report, how many are from its own research center?",8,"Now I have all the references from both pages 21 and 22. Let me compile the complete list and identify which ones are from Pew Research Center.
+
+From the references retrieved (pages 21–22), here is the complete list of **12 references**:
+
+1. **Blumberg & Luke (2016)** – National Center for Health Statistics *(Not Pew)*
+2. **DeNavas-Walt & Proctor (2015)** – U.S. Census Bureau *(Not Pew)*
+3. **Kochhar (2014)** – **Pew Research Center** ✅
+4. **Kochhar & Fry (2014)** – **Pew Research Center** ✅
+5. **Kochhar, Fry & Taylor (2011)** – **Pew Research Center** ✅
+6. **Lopez, Gonzalez-Barrera & Krogstad (2014)** – **Pew Research Center** ✅
+7. **National Bureau of Economic Research (2010)** – NBER *(Not Pew)*
+8. **Pew Research Center (2015)** – **Pew Research Center** ✅
+9. **Pew Research Center (2014)** – **Pew Research Center** ✅
+10. **Pew Research Center (2009)** – **Pew Research Center** ✅
+11. **Stepler & Brown (2016)** – **Pew Research Center** ✅
+12. **Weeks (2014)** – Selig Center for Economic Growth *(Not Pew)*
+
+---
+
+**Out of the 12 references, 8 are from Pew Research Center** (the report's own research center). These are references #3–#11 attributed to Pew Research Center authors or directly to the Pew Research Center as an institution.",True,True,True,True,0.0112,0.0019,1,True,PH_2016.06.08_Economy-Final_page_21|PH_2016.06.08_Economy-Final_page_22|PH_2016.06.08_Economy-Final_page21_layout144|PH_2016.06.08_Economy-Final_bridge_20-21
+PH_2016.06.08_Economy-Final,Chart,"According to this report, among the Hispanics shaped by four current personal financial situation, which situation involves the highest percentage that expects their future financial situation to get a lot worse?",Poor Financial Condition,"The answer is clearly found in the bar chart from page 15 of the report. Here is the breakdown of the ""Get a lot worse"" percentages across the four financial situations:
+
+| Current Financial Situation | % Expecting ""Get a Lot Worse"" |
+|---|---|
+| Excellent financial condition | ~0% (not shown) |
+| Good financial condition | 1% |
+| Only fair financial condition | 3% |
+| **Poor financial condition** | **8%** |
+
+Among the four current personal financial situations for Hispanics, those in **poor financial condition** have the highest percentage expecting their future financial situation to **get a lot worse**, at **8%**.",False,False,True,True,0.0659,0.0819,1,True,PH_2016.06.08_Economy-Final_page15_layout115
+PH_2016.06.08_Economy-Final,Chart,"According to this report, from 2014 to 2015, one group has the most significant drop of percentage of households claiming their income was falling behind cost of living.
+Which group is this, and what is the percentage droped?","['White', '10%']","The answer is clearly found in the bar chart on page 10 of the report. Here is the breakdown:
+
+**The White group** had the most significant drop in the percentage of households claiming their income was ""falling behind"" the cost of living.
+
+- **2014:** 59% of White adults said their income was falling behind
+- **2015:** 49% of White adults said their income was falling behind
+- **Drop: 10 percentage points** (from 59% to 49%)
+
+For comparison, the drops for the other groups were much smaller:
+- **Black:** dropped from 55% → 51% (a drop of 4 percentage points)
+- **Hispanic:** stayed flat at 53% → 53% (no change)",False,False,True,True,0.0385,0.0282,1,False,PH_2016.06.08_Economy-Final_page10_layout80|PH_2016.06.08_Economy-Final_page10_layout79
+0e94b4197b10096b1f4c699701570fbf,Pure-text (Plain-text),Where was Gestalt psychology concieved?,Berlin School of Experimental Psychology,Gestalt psychology was conceived in the **Berlin School of Experimental Psychology**. It focuses on understanding the laws of our ability to acquire and maintain meaningful perceptions.,True,True,True,True,0.3226,0.3653,1,True,0e94b4197b10096b1f4c699701570fbf_page1_layout2
+0e94b4197b10096b1f4c699701570fbf,Chart,According to the chart on page 14 how much time was spent with family and friends in 2010?,21%,"Based on the chart found on page 14 (which appears as page 13 in the document's internal layout), the **""Time Spent on Weekends""** clock chart shows that in **2010, 21% of time was spent with family and friends** — a notable decrease from the 35% recorded in 2005.",True,True,True,True,0.0417,0.0162,1,True,0e94b4197b10096b1f4c699701570fbf_page13_layout35
+0e94b4197b10096b1f4c699701570fbf,Chart,What range does red color represents in approximate distance from the Mississippi River in the chart that tracks the West NIle Virus in Europe?,0-375 miles,"Based on the retrieved chart, the **red color** in the West Nile Virus map represents an approximate distance of **0 to 375 miles** from the Mississippi River. States colored in red are the closest to the Mississippi River, and as shown in the map, they also tend to have the tallest prisms, indicating a higher number of confirmed human West Nile Virus cases.",True,True,True,True,0.0308,0.0562,1,False,0e94b4197b10096b1f4c699701570fbf_page9_layout23
+0e94b4197b10096b1f4c699701570fbf,Pure-text (Plain-text),How does this document define the law of good gestalt?,"Elements of objects tend to be perceptually grouped together if they form a pattern that is regular, simple, and orderly.","Based on the retrieved content, here is how the document defines the **Law of Good Gestalt**:
+
+The Law of Good Gestalt states that **elements of objects tend to be perceptually grouped together if they form a pattern that is regular, simple, and orderly**. This law implies that as individuals perceive the world, they eliminate complexity and unfamiliarity so they can observe reality in its most simplistic form. Eliminating extraneous stimuli helps the mind create meaning.
+
+The document further explains that this meaning created by perception implies a **global regularity**, which is often mentally prioritized over spatial relations. The Law of Good Gestalt focuses on the idea of **conciseness**, which is described as the foundation of all gestalt theory.",True,False,True,True,0.2899,0.2763,1,False,0e94b4197b10096b1f4c699701570fbf_page10_layout25|0e94b4197b10096b1f4c699701570fbf_page10_layout26|0e94b4197b10096b1f4c699701570fbf_page10_layout27
+0e94b4197b10096b1f4c699701570fbf,Chart,Which category has the most increase from 2005 to 2010 for time spent on weedends?,Eating out,"Based on the retrieved data from the **""Time Spent on Weekends""** clock chart, here is the comparison of changes from 2005 to 2010:
+
+| Category | 2005 | 2010 | Change |
+|---|---|---|---|
+| With family and friends | 35% | 21% | **-14%** |
+| Watching films | 20% | 22% | **+2%** |
+| Fitness | 5% | 17% | **+12%** |
+| Shopping | 10% | 10% | 0% |
+| Reading | 10% | 10% | 0% |
+| Eating out | 10% | 6% | -4% |
+| Travelling | 5% | 6% | +1% |
+| Net surfing | 3% | 4% | +1% |
+| Hobbies | 2% | 4% | +2% |
+
+The category with the **most increase** from 2005 to 2010 is **Fitness**, which grew from **5% to 17%**, an increase of **+12 percentage points**.",True,True,True,True,0.0421,0.0393,0,True,0e94b4197b10096b1f4c699701570fbf_page13_layout35
+0e94b4197b10096b1f4c699701570fbf,Figure,Which continent has the most number of registered participant for advanced science course in CTBTO?,Europe,"Based on the infographic found, I can now clearly answer your question.
+
+The infographic from the CTBTO Advanced Science Course shows participant distribution across regions on a world map with the following numbers:
+
+- **Europe: 130** ✅ *(highest)*
+- Asia: 80
+- Africa: 77
+- North America: 43
+- Latin America/Caribbean: 20 + 9
+- Middle East: 28
+- Oceania/Pacific: 30
+- South America: 8
+
+**Europe has the most registered participants** for the CTBTO Advanced Science Course, with **130 participants**, out of a total of 425 registered participants from 105 countries.",True,True,True,True,0.0244,0.0226,1,True,0e94b4197b10096b1f4c699701570fbf_page12_layout34
+0e94b4197b10096b1f4c699701570fbf,Figure,Which shapes does the slide use to illustrate the closure aspect of Gestalt Principle of Visual Perception?,"['Circle', 'Rectangle']","The slide illustrating the **Closure** aspect of the Gestalt Principle of Visual Perception uses two shapes drawn with **dashed/incomplete lines**:
+
+1. **A Circle** – outlined with dashed lines, with gaps in its outline, yet our perception fills in the missing parts and sees a complete circle.
+2. **A Rectangle (Square)** – also outlined with dashed lines and incomplete corners, yet similarly perceived as a whole, closed shape.
+
+These shapes demonstrate the principle of Closure, which states: *""We tend to perceive objects such as shapes, letters, pictures, etc., as being whole when they are not complete. Specifically, when parts of a whole picture are missing, our perception fills in the visual gap.""*",True,True,True,True,0.036,0.0471,1,False,0e94b4197b10096b1f4c699701570fbf_page7_layout17|0e94b4197b10096b1f4c699701570fbf_page7_layout16
+2310.05634v2,Chart,"In figure 1, which relation arrows do not point to specific leaf nodes?","['movement', 'birth', 'place of birth', 'member']","Based on my thorough search, I have found Figure 1 in the document. It is the knowledge graph diagram on page 0 of the KaLMA paper (chunk `[2310.05634v2_page0_layout7]`). The diagram shows a knowledge graph with **Orazio Gentileschi** and **Artemisia Gentileschi** as the central nodes, connected by various labeled relation arrows to other nodes.
+
+Looking carefully at the figure image, the following relation arrows **do point to specific leaf nodes** (named, visible nodes):
+- **occupation** → **Painter** (Q1028181)
+- **style** → **Baroque** (Q37853)
+- **child/father** ↔ between Orazio and Artemisia
+- **citizen** → **Italy** (Q38) (from both Orazio and Artemisia)
+- **place of birth** → (from Artemisia)
+- **member** → (from Artemisia)
+
+The relation arrows that **do NOT point to specific leaf nodes** — meaning they trail off without connecting to a visible, named destination node in the diagram — are:
+
+- **movement** (from Orazio Gentileschi — the arrow points outward/leftward but does not connect to a displayed node)
+- **birth** (from Orazio Gentileschi — the arrow also points outward/leftward without a leaf node shown)
+- **place of birth** (from Artemisia — points to the right but has no visible destination node)
+- **member** (from Artemisia — points to the right but has no visible destination node)
+
+In summary, the **""movement,"" ""birth,"" ""place of birth,"" and ""member""** relation arrows in Figure 1 do not point to specific leaf nodes — they extend outward from the central entities without landing on a displayed, labeled destination node.",False,False,True,True,0.0529,0.0498,1,False,2310.05634v2_page0_layout7
+2310.05634v2,Chart,"In figure 5, what is the color of the line that has no intersection with any other line?",red,"I now have a clear view of Figure 5 — the ""Retrieval Analysis"" line graph. Looking at the image, the four lines are:
+
+- **Blue** (precision) — intersects with orange (recall) and green (F1 Score) around the ""40"" mark
+- **Orange** (recall) — intersects with blue and green
+- **Green** (F1 Score) — intersects with blue and orange
+- **Red** (correctness) — runs at a much higher level and **never intersects** with any of the other three lines
+
+The **red** line (representing **correctness**) is the one that has no intersection with any other line in Figure 5.",False,False,True,True,0.0225,0.0119,1,True,2310.05634v2_page7_layout93
+2310.05634v2,Table,"How many tables include ""F1"" as a metric?",3,"Based on the retrieved results, I can identify the tables that include ""F1"" as a metric:
+
+1. **Table on page 6** [chunk_id: 2310.05634v2_page6_layout77] — Includes both **Micro F1** and **Macro F1** columns.
+2. **Table on page 6** [chunk_id: 2310.05634v2_page6_layout83] — Includes an **F1.** column (alongside Corr., Prec., Rec.).
+3. **Table on page 8** [chunk_id: 2310.05634v2_page8_layout99] — Includes an **F1.** column under the ""Citation Eval."" section.
+
+**A total of 3 tables include ""F1"" as a metric.**",True,True,True,True,0.0274,0.0046,1,True,2310.05634v2_page6_layout77|2310.05634v2_page6_layout83|2310.05634v2_page8_layout99
+2310.05634v2,Pure-text (Plain-text),"From the paper, which temperature gives ChatGPT the highest alignment score?",0.1,"Based on the retrieved tables, the answer is clear.
+
+**Temperature 0.1** gives ChatGPT the highest alignment score. According to the main results table (Table 3), the alignment scores for the three ChatGPT temperature settings are:
+
+| Model | Alignment Score |
+|---|---|
+| ChatGPT (0.1) | **85.9** |
+| ChatGPT (0.5) | 84.5 |
+| ChatGPT (0.9) | 84.1 |
+
+ChatGPT at temperature **0.1** achieves the highest alignment score of **85.9**, though the paper also notes that ""temperature does not play a significant role"" for ChatGPT, as the differences are small.",True,True,True,True,0.0253,0.0081,1,True,2310.05634v2_page6_layout77|2310.05634v2_page6_layout79
+2310.05634v2,Pure-text (Plain-text),"For dataset construction, which step takes the most word to describe than the others. ",Evolutionary Question Generation,"Based on the retrieved content, I can now compare the descriptions of the three dataset construction steps — **A.1 Person Selection**, **A.2 Name Disambiguation**, and **A.3 Evolutionary Question Generation** — in the appendix.
+
+- **A.1 Person Selection**: Covered in a single relatively short paragraph describing the use of the biographical database, relation triples, and filtering criteria. [chunk: `2310.05634v2_page11_layout157`]
+
+- **A.2 Name Disambiguation**: Also covered in one paragraph explaining SPARQL queries, QID mapping, and extraction of one-hop sub-graphs into a ""knowledge pool."" [chunk: `2310.05634v2_page11_layout159`]
+
+- **A.3 Evolutionary Question Generation**: Spans an **entire page (page 12)**, covering the iterative approach, specificity and coherence scoring, a mathematical formula for scoring, the use of the LLM for each iteration, and notes on prompts and demonstrations — clearly far more detailed than the other two steps.
+
+**The step that takes the most words to describe is Step 3: Evolutionary Question Generation (A.3).** It is described at length across a full page in Appendix A, detailing the iterative paragraph extension process, the knowledge selection algorithm, the specificity score (IDF-based), the coherence score (perplexity-based), a weighted scoring formula, the use of the ""text-davinci-003"" model with in-context learning, and the use of five iterations — making it substantially longer than the descriptions of either Person Selection or Name Disambiguation.",True,False,True,True,0.029,0.0444,1,True,2310.05634v2_page_12|2310.05634v2_page11_layout157|2310.05634v2_page11_layout159
+2310.05634v2,Pure-text (Plain-text),"According to author's definition on conscious incompetence, when can a sentence map to both [NA] and a list of sub-graph knowledge?",If it can be partially verified by the knowledge graph G,"The answer is found directly in the author's definition. According to chunk `[2310.05634v2_page1_layout18]`:
+
+A sentence can map to both **[NA]** and a list of sub-graph knowledge when it **can be partially verified by the knowledge graph G**. In other words, if a sentence contains some knowledge that exists in the knowledge graph (allowing it to be grounded to sub-graph knowledge) *and* some knowledge that is absent from the knowledge graph (triggering the [NA] indicator), then both mappings apply simultaneously. [NA] in this context acts not as a conventional citation, but as an indicator of a knowledge gap for the portion of the sentence that cannot be verified.",False,False,True,True,0.1864,0.1616,1,False,2310.05634v2_page1_layout18
+honor_watch_gs_pro,Figure,What is the time on the gallery screenshot when demostrating how to set galley watch faces?,10:08AM,"The time displayed on the Gallery screenshot when demonstrating how to set Gallery watch faces is **10:08 AM** on **FRI 18**.
+
+This time appears consistently across multiple Gallery watch face screenshots (pages 38, 39, and 40) in the document.",True,True,True,True,0.0,0.0511,1,False,honor_watch_gs_pro_page38_layout408|honor_watch_gs_pro_page39_layout409|honor_watch_gs_pro_page40_layout410
+honor_watch_gs_pro,Figure,What is the color on the watch that shows the aerobic zone?,yellow,"Based on the retrieved image from the Honor Watch GS Pro manual, the **Aerobic zone** is displayed in **yellow** on the watch. This is clearly visible in the watch display image where the ""Aerobic"" label appears highlighted in a **yellow/golden** color at the top of the watch face, with the pointer indicating the yellow segment on the heart rate zone ring.",True,True,True,True,0.0323,0.0348,1,True,honor_watch_gs_pro_page22_layout211|honor_watch_gs_pro_page22_layout210
+honor_watch_gs_pro,Pure-text (Plain-text),What are the colors of the icons that the users touch to move the app up and remove the app respectively?,"['gray', 'red']","Based on the retrieved visual content, here is the answer:
+
+- The icon to **move the app up** to the top of the list is a **gray** upward arrow icon. 🔼
+- The icon to **remove the app** from the list is a **red** minus icon. 🔴
+
+Both are used on the **Favorites screen** of the device. [chunk_id: honor_watch_gs_pro_page15_layout129]",True,True,True,True,0.0702,0.0521,1,False,honor_watch_gs_pro_page15_layout129
+honor_watch_gs_pro,Table,How many distinct button functions are there during a workout?,5,"Based on the retrieved table from page 11, there are **4 distinct button operations** during a workout, each with its own distinct function:
+
+| Operation | Function |
+|---|---|
+| Press the Up button | Lock/unlock, mute, or end workout |
+| Press the Down button | Switch screen |
+| Press and hold the Up button | Finish the workout |
+| Press and hold the Down button | Wake up the voice assistant |
+
+So there are **4 distinct button functions** during a workout:
+1. **Lock/unlock, mute, or end workout** (Press the Up button)
+2. **Switch screen** (Press the Down button)
+3. **Finish the workout** (Press and hold the Up button)
+4. **Wake up the voice assistant** (Press and hold the Down button)
+
+*(Note: Swiping up/down or left/right on the screen also switches screens, but those are gesture-based, not button functions.)*",True,True,True,True,0.0,0.0,0,False,honor_watch_gs_pro_page11_layout85
+honor_watch_gs_pro,unknown,"If ""--"" is displayed as the resting heart rate reading, what kind of environment should the user stay in?",a quiet and relaxed environment ,"If ""--"" is displayed as the resting heart rate reading, it indicates that the watch was unable to measure your resting heart rate. In this case, the user should stay in a **quiet and relaxed environment** while awake. For the most accurate result, it is recommended to measure the resting heart rate **immediately after waking up in the morning** [honor_watch_gs_pro_bridge_23-24].",True,True,False,False,0.1562,0.1586,1,False,honor_watch_gs_pro_bridge_23-24
+2024.ug.eprospectus,Table,Which groups of applicants have the lastest end of application period according to this brochure?,"[""Singapore-Cambridge GCE 'A' Level"", 'International Baccalaureate (IB) Diploma']","Based on the retrieved table from the brochure, the groups of applicants with the **latest end of application period** are:
+
+1. **Singapore-Cambridge GCE 'A' Level** applicants — ending **19 March 2024**
+2. **International Baccalaureate (IB) Diploma** applicants — also ending **19 March 2024**
+
+Both of these groups share the same latest deadline of **19 March 2024**, which is the furthest end date compared to all other applicant groups (Polytechnic Diploma applicants end 21 Feb 2024, NUS High School Diploma ends 20 Jan 2024, and Part-Time B.Eng ends 15 Jan 2024).",True,True,True,True,0.1667,0.2319,1,False,2024.ug.eprospectus_page24_layout569
+2024.ug.eprospectus,Figure,"Among the top 10 reasons why NTU smart campus is for you, which is the reason that does not include any person in the corresponding figure?",Most Beautiful Campus,"Based on the retrieved image of the ""Top 10 Reasons Why NTU Smart Campus Is For You,"" I can clearly identify the answer by examining each reason's corresponding figure:
+
+- **Reason 9 – Most Beautiful Campus** is the only figure that does **not** include any person. Its image shows an **aerial/bird's-eye view of the campus building and green landscape**, with no people visible — only the architecture and greenery of NTU's campus.
+
+All other reasons feature people in their corresponding images:
+1. Interdisciplinary Learning – group of students
+2. Space to Innovate – students working in a lab
+3. Industry-ready – a student working
+4. Immersion in Research – a person in a lab (Rolls-Royce)
+5. Internship Opportunities – a person standing in front of an AMD logo
+6. Global Exposure – a student abroad
+7. Be Among the Top Ranked – students walking
+8. Prestigious Scholarships and Financial Aid – students on campus
+10. Vibrant Campus Life – students at an event",True,True,True,True,0.039,0.045,1,True,2024.ug.eprospectus_page2_layout18
+2024.ug.eprospectus,Generalized-text (Layout),Student from which major has a picture of playing badminton in this brochure?,Medicine,"The badminton photo is on **page 21**, and the nearby text chunk [2024.ug.eprospectus_page21_layout510] identifies the student as **Chua Wei Ning, Denise**, who is in the **Accountancy and Business** major (Year 4).
+
+So, the student pictured playing badminton is from the **Accountancy and Business** major.",True,False,True,False,0.0,0.0488,0,False,2024.ug.eprospectus_page21_layout511|2024.ug.eprospectus_page21_layout510
+2024.ug.eprospectus,Generalized-text (Layout),Which colleges/schools/institutes from NTU use year 3 students as cover page student model?,"['College of Engineering', 'Nanyang Business School', 'National Institute of Education']","I now have all the information needed to answer the question. Based on all retrieved evidence, here is the comprehensive answer:
+
+Based on the NTU 2024 Undergraduate Prospectus, the following colleges/schools/institutes use **Year 3 students** as their cover page student models:
+
+1. **College of Engineering (CoE)** — Cover model is **Stella Chua Zhi Yun**, Mechanical Engineering, **Year 3** [page 9]
+
+2. **Nanyang Business School (NBS)** — Cover model is **Wang Shi Lin Nicole**, Business, **Year 3** [page 16]
+
+3. **National Institute of Education (NIE)** — Cover model is **Ruth Koh**, Sport Science & Management, **Year 3** [page 17]
+
+For comparison, the other colleges/institutes used students of different year levels:
+- **College of Engineering (CoE)**: Year 3 ✅
+- **Colleges of Humanities, Arts and Social Sciences (CoHASS)**: Year 4 (Seth Low, Communication Studies)
+- **College of Science**: Year 4 (Balaji Srinivasan, Biological Sciences and Psychology)
+- **Lee Kong Chian School of Medicine (LKCMedicine)**: Year 4 (Muhamed Shamir Jaffar Hussein, MBBS)
+- **Nanyang Business School (NBS)**: Year 3 ✅
+- **National Institute of Education (NIE)**: Year 3 ✅",False,False,True,False,0.1156,0.1407,1,False,2024.ug.eprospectus_page_9|2024.ug.eprospectus_page_16|2024.ug.eprospectus_page_17
+2024.ug.eprospectus,Pure-text (Plain-text),"How many schools from College of Humanities, Arts, and Social Sciences are not individually introduced in detail?",3,"Based on the retrieved information, I can now provide a clear answer.
+
+From the document, the **College of Humanities, Arts, and Social Sciences (CoHASS)** has the following schools listed on its overview page (page 11):
+
+1. School of Humanities
+2. School of Social Sciences
+3. Wee Kim Wee School of Communication and Information
+
+Additionally, there are two centres also listed under CoHASS:
+- Nanyang Centre for Public Administration
+- NTU Centre for Contemporary Art Singapore
+- Centre for Liberal Arts and Social Sciences
+
+From the **Table of Contents** (page 1), the schools that are **individually introduced in detail** within the prospectus are:
+1. School of Art, Design and Media (page 22)
+2. School of Humanities (page 22)
+3. School of Social Sciences (page 23)
+4. Wee Kim Wee School of Communication and Information (page 23)
+
+Notably, the **School of Art, Design and Media (ADM)** is introduced in detail (page 22) but is **not listed** among the schools on CoHASS's overview page (page 11), while the three schools listed on the CoHASS overview page are all individually introduced in detail.
+
+The CoHASS overview page lists **3 schools**, and all 3 of them — School of Humanities, School of Social Sciences, and Wee Kim Wee School of Communication and Information — are individually introduced in detail. However, the **School of Art, Design and Media** appears in the Table of Contents under CoHASS but is **not listed** on the CoHASS overview page among its schools.
+
+Comparing the overview page listing (3 schools) vs. the detailed introductions (4 schools including ADM), it is the centres/other entities (Nanyang Centre for Public Administration, NTU Centre for Contemporary Art Singapore, Centre for Liberal Arts and Social Sciences) that are listed under CoHASS but **not** individually introduced in detail. That amounts to **3 entities** not individually introduced in detail.
+
+**Answer:** There are **3** entities under the College of Humanities, Arts, and Social Sciences that are listed but not individually introduced in detail — namely the **Nanyang Centre for Public Administration**, the **NTU Centre for Contemporary Art Singapore**, and the **Centre for Liberal Arts and Social Sciences**. All four schools (School of Art, Design and Media; School of Humanities; School of Social Sciences; and Wee Kim Wee School of Communication and Information) receive individual detailed introductions.",True,False,True,False,0.0054,0.0009,1,True,2024.ug.eprospectus_page11_layout205|2024.ug.eprospectus_page11_layout206|2024.ug.eprospectus_page11_layout207|2024.ug.eprospectus_page11_layout208|2024.ug.eprospectus_page1_layout13

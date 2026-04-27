@@ -1,0 +1,70 @@
+{
+  "timestamp": "2026-04-27T01:47:50.878820Z",
+  "num_questions": 29,
+  "num_documents": 5,
+  "page_recall@5": 0.896551724137931,
+  "layout_recall@5": 0.6206896551724138,
+  "cited_page_grounded": 0.9655172413793104,
+  "cited_layout_grounded": 0.6551724137931034,
+  "token_f1": 0.14512989438443166,
+  "fuzzy_match": 0.16207550528144368,
+  "llm_judge": 0.7931034482758621,
+  "exact_containment": 0.5517241379310345,
+  "modality_breakdown": {
+    "Chart": {
+      "n": 9,
+      "page_recall@5": 0.8889,
+      "layout_recall@5": 0.7778,
+      "llm_judge": 0.8889,
+      "cited_page_grounded": 1.0,
+      "cited_layout_grounded": 0.8889
+    },
+    "Figure": {
+      "n": 5,
+      "page_recall@5": 0.8,
+      "layout_recall@5": 0.8,
+      "llm_judge": 0.8,
+      "cited_page_grounded": 1.0,
+      "cited_layout_grounded": 0.8
+    },
+    "Generalized-text (Layout)": {
+      "n": 2,
+      "page_recall@5": 0.5,
+      "layout_recall@5": 0.0,
+      "llm_judge": 0.0,
+      "cited_page_grounded": 1.0,
+      "cited_layout_grounded": 0.0
+    },
+    "Pure-text (Plain-text)": {
+      "n": 8,
+      "page_recall@5": 1.0,
+      "layout_recall@5": 0.5,
+      "llm_judge": 0.875,
+      "cited_page_grounded": 1.0,
+      "cited_layout_grounded": 0.625
+    },
+    "Table": {
+      "n": 4,
+      "page_recall@5": 1.0,
+      "layout_recall@5": 0.5,
+      "llm_judge": 0.75,
+      "cited_page_grounded": 1.0,
+      "cited_layout_grounded": 0.5
+    },
+    "unknown": {
+      "n": 1,
+      "page_recall@5": 1.0,
+      "layout_recall@5": 1.0,
+      "llm_judge": 1.0,
+      "cited_page_grounded": 0.0,
+      "cited_layout_grounded": 0.0
+    }
+  },
+  "docs_evaluated": [
+    "PH_2016.06.08_Economy-Final",
+    "0e94b4197b10096b1f4c699701570fbf",
+    "2310.05634v2",
+    "honor_watch_gs_pro",
+    "2024.ug.eprospectus"
+  ]
+}
