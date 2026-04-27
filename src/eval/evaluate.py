@@ -21,7 +21,7 @@ from difflib import SequenceMatcher
 import anthropic
 import pandas as pd
 
-from src.agent.graph_react import graph
+from src.agent.graph import graph
 from src.agent.state import RAGState
 from src.config import ANTHROPIC_API_KEY, CLAUDE_MODEL, LAYOUTS_PATH
 
