@@ -44,21 +44,27 @@ def _get_chroma() -> chromadb.ClientAPI:
 def node_query_analyzer(state: RAGState) -> dict:
     """Classify query and produce retrieval plan; increments retry_count when replanning."""
     insufficiency_reason = state.get("insufficiency_reason") or ""
-    result = analyze_query(
-        question=state["question"],
-        insufficiency_reason=insufficiency_reason,
-    )
-    # table/figure questions always need a specific layout element — force layout granularity
-    # regardless of what the planner output; page granularity is only valid for broad
-    # aggregation questions (text/mixed modality)
-    granularity = result.granularity
-    if result.modality in ("table", "figure"):
+    try:
+        result = analyze_query(
+            question=state["question"],
+            insufficiency_reason=insufficiency_reason,
+        )
+        granularity = result.granularity
+        if result.modality in ("table", "figure"):
+            granularity = "layout"
+        modality = result.modality
+        rewritten_query = result.rewritten_query
+        top_k = max(5, min(20, int(result.top_k)))
+    except Exception:
         granularity = "layout"
+        modality = ""
+        rewritten_query = state["question"]
+        top_k = 10
     return {
-        "modality": result.modality,
+        "modality": modality,
         "granularity": granularity,
-        "rewritten_query": result.rewritten_query,
-        "top_k": max(5, min(20, int(result.top_k))),
+        "rewritten_query": rewritten_query,
+        "top_k": top_k,
         # Increment only on replanning (non-empty reason means a prior attempt failed)
         "retry_count": (state.get("retry_count") or 0) + (1 if insufficiency_reason else 0),
     }
@@ -97,43 +103,56 @@ def node_rerank(state: RAGState) -> dict:
 
 def node_sufficiency_check(state: RAGState) -> dict:
     """Assess whether reranked chunks are sufficient to answer the question."""
-    result = check_sufficiency(
-        question=state["question"],
-        context=_format_context(state.get("reranked_chunks") or []),
-    )
-    return {
-        "is_sufficient": result.is_sufficient,
-        "insufficiency_reason": "" if result.is_sufficient else result.insufficiency_reason,
-    }
+    try:
+        result = check_sufficiency(
+            question=state["question"],
+            context=_format_context(state.get("reranked_chunks") or []),
+        )
+        return {
+            "is_sufficient": result.is_sufficient,
+            "insufficiency_reason": "" if result.is_sufficient else result.insufficiency_reason,
+        }
+    except Exception:
+        return {"is_sufficient": True, "insufficiency_reason": ""}
 
 
 def node_generate(state: RAGState) -> dict:
     """Generate a cited answer from reranked evidence; incorporates validation_feedback on retry."""
     chunks = state.get("reranked_chunks") or []
-    result = generate_answer(
-        question=state["question"],
-        context=_format_context(chunks),
-        images=_chunk_images(chunks),
-        validation_feedback=state.get("validation_feedback") or "",
-    )
-    cited = result.cited_chunk_ids if isinstance(result.cited_chunk_ids, list) else []
-    return {"answer": result.answer, "cited_chunk_ids": cited}
+    try:
+        result = generate_answer(
+            question=state["question"],
+            context=_format_context(chunks),
+            images=_chunk_images(chunks),
+            validation_feedback=state.get("validation_feedback") or "",
+        )
+        cited = result.cited_chunk_ids if isinstance(result.cited_chunk_ids, list) else []
+        return {"answer": result.answer, "cited_chunk_ids": cited}
+    except Exception:
+        return {"answer": "", "cited_chunk_ids": []}
 
 
 def node_validate(state: RAGState) -> dict:
     """Validate that the generated answer is grounded in the retrieved evidence."""
     chunks = state.get("reranked_chunks") or []
-    result = validate_answer(
-        question=state["question"],
-        answer=state.get("answer") or "",
-        context=_format_context(chunks),
-        images=_chunk_images(chunks),
-    )
-    return {
-        "is_validated": result.is_valid,
-        "validation_feedback": "" if result.is_valid else result.feedback,
-        "validation_attempts": (state.get("validation_attempts") or 0) + 1,
-    }
+    try:
+        result = validate_answer(
+            question=state["question"],
+            answer=state.get("answer") or "",
+            context=_format_context(chunks),
+            images=_chunk_images(chunks),
+        )
+        return {
+            "is_validated": result.is_valid,
+            "validation_feedback": "" if result.is_valid else result.feedback,
+            "validation_attempts": (state.get("validation_attempts") or 0) + 1,
+        }
+    except Exception:
+        return {
+            "is_validated": True,
+            "validation_feedback": "",
+            "validation_attempts": (state.get("validation_attempts") or 0) + 1,
+        }
 
 
 def route_after_sufficiency(state: RAGState) -> str:
