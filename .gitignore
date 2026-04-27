@@ -82,7 +82,6 @@ target/
 data/
 notebooks/
 chroma_db/
-results/
 bge_onnx_cache/
 bge_base_onnx_cache/
 bge_reranker_base_cache/
