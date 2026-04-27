@@ -16,9 +16,11 @@ from src.config import LAYOUTS_PATH
 
 class LayoutImageStore:
     def __init__(self) -> None:
+        """Initialise with an empty store; data is loaded lazily on first access."""
         self._store: dict[tuple[str, int], bytes] | None = None
 
     def _load(self) -> None:
+        """Load all image/table image_binary rows from the layouts parquet into memory."""
         df = pd.read_parquet(
             LAYOUTS_PATH,
             columns=["doc_name", "layout_id", "type", "image_binary"],
@@ -30,6 +32,7 @@ class LayoutImageStore:
         }
 
     def get(self, doc_name: str, layout_id: int) -> bytes | None:
+        """Return image bytes for a specific (doc_name, layout_id) pair, or None."""
         if self._store is None:
             self._load()
         return self._store.get((doc_name, layout_id))

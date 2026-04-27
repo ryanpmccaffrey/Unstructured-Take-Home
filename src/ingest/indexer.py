@@ -1,11 +1,10 @@
 import chromadb
-from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
 
 from src.config import CHROMA_PATH, COLLECTION_LAYOUTS, COLLECTION_PAGES
+from src.embedder import get_embedder
 from src.ingest.chunker import Chunk
 
-_BATCH_SIZE = 128
-_ef = DefaultEmbeddingFunction()
+_BATCH_SIZE = 64
 
 
 def _upsert_chunks(
@@ -13,6 +12,8 @@ def _upsert_chunks(
     chunks: list[dict],
     text_key: str = "text_for_embedding",
 ) -> int:
+    """Embed chunks in batches and upsert embeddings + metadata into the collection."""
+    embedder = get_embedder()
     ids = [c["chunk_id"] for c in chunks]
     texts = [c[text_key] or " " for c in chunks]
     metadatas = [{k: v for k, v in c.items() if k != text_key} for c in chunks]
@@ -22,8 +23,10 @@ def _upsert_chunks(
         batch_ids = ids[i : i + _BATCH_SIZE]
         batch_texts = texts[i : i + _BATCH_SIZE]
         batch_meta = metadatas[i : i + _BATCH_SIZE]
+        batch_embeds = embedder.embed_documents(batch_texts)
         collection.upsert(
             ids=batch_ids,
+            embeddings=batch_embeds,
             documents=batch_texts,
             metadatas=batch_meta,
         )
@@ -32,15 +35,15 @@ def _upsert_chunks(
 
 
 def build_index(tier1_chunks: list[Chunk], tier2_chunks: list[dict]) -> None:
+    """Initialise ChromaDB collections and upsert all Tier 1 and Tier 2 chunks."""
+    print(f"Loading BGE embedder...")
+    get_embedder()  # warm up
+
     chroma = chromadb.PersistentClient(path=CHROMA_PATH)
 
-    # Collections use DefaultEmbeddingFunction (onnxruntime-backed all-MiniLM-L6-v2)
-    layouts_col = chroma.get_or_create_collection(
-        COLLECTION_LAYOUTS, embedding_function=_ef
-    )
-    pages_col = chroma.get_or_create_collection(
-        COLLECTION_PAGES, embedding_function=_ef
-    )
+    # Collections store raw embeddings (no built-in embedding function)
+    layouts_col = chroma.get_or_create_collection(COLLECTION_LAYOUTS)
+    pages_col = chroma.get_or_create_collection(COLLECTION_PAGES)
 
     tier1_dicts = [c.to_dict() for c in tier1_chunks]
 

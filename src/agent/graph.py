@@ -1,32 +1,60 @@
+"""
+Planner-Executor agent entry point (default for make eval).
+
+A lightweight DSPy planner classifies the query and produces a retrieval plan;
+LangGraph executor nodes carry out that plan; a sufficiency check can loop back
+to the planner on failure; a validator can loop back to the generator on
+grounding failures.
+
+Graph structure:
+
+  START → query_analyzer → retrieve → rerank → sufficiency_check
+              ↑ [replan: max 2 retries]               ↓ [generate]
+              └──────────────────────────────────── generate → validate → END
+                                                         ↑ [regenerate: max 1 retry]
+                                                         └──────────────────────────┘
+
+Alternative: see graph_react.py for the ReAct (tool-use loop) implementation.
+Both expose the same graph.invoke(state) interface.
+"""
+
 from langgraph.graph import END, START, StateGraph
 
 from src.agent.nodes import (
-    node_analyze_query,
-    node_assess_sufficiency,
-    node_expand_retrieval,
-    node_generate_answer,
+    node_generate,
+    node_query_analyzer,
+    node_rerank,
     node_retrieve,
+    node_sufficiency_check,
+    node_validate,
     route_after_sufficiency,
+    route_after_validation,
 )
 from src.agent.state import RAGState
 
-_builder = StateGraph(RAGState)
+_workflow = StateGraph(RAGState)
 
-_builder.add_node("analyze_query", node_analyze_query)
-_builder.add_node("retrieve", node_retrieve)
-_builder.add_node("assess_sufficiency", node_assess_sufficiency)
-_builder.add_node("generate_answer", node_generate_answer)
-_builder.add_node("expand_retrieval", node_expand_retrieval)
+_workflow.add_node("query_analyzer", node_query_analyzer)
+_workflow.add_node("retrieve", node_retrieve)
+_workflow.add_node("rerank", node_rerank)
+_workflow.add_node("sufficiency_check", node_sufficiency_check)
+_workflow.add_node("generate", node_generate)
+_workflow.add_node("validate", node_validate)
 
-_builder.add_edge(START, "analyze_query")
-_builder.add_edge("analyze_query", "retrieve")
-_builder.add_edge("retrieve", "assess_sufficiency")
-_builder.add_conditional_edges(
-    "assess_sufficiency",
+_workflow.add_edge(START, "query_analyzer")
+_workflow.add_edge("query_analyzer", "retrieve")
+_workflow.add_edge("retrieve", "rerank")
+_workflow.add_edge("rerank", "sufficiency_check")
+_workflow.add_conditional_edges(
+    "sufficiency_check",
     route_after_sufficiency,
-    {"generate": "generate_answer", "expand": "expand_retrieval"},
+    {"replan": "query_analyzer", "generate": "generate"},
 )
-_builder.add_edge("expand_retrieval", "retrieve")
-_builder.add_edge("generate_answer", END)
+_workflow.add_edge("generate", "validate")
+_workflow.add_conditional_edges(
+    "validate",
+    route_after_validation,
+    {"end": END, "regenerate": "generate"},
+)
 
-graph = _builder.compile()
+graph = _workflow.compile()

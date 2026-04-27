@@ -1,154 +1,154 @@
+"""
+LangGraph node functions for the Planner-Executor RAG pipeline.
+
+Nodes:
+  node_query_analyzer    — DSPy: classify query, produce retrieval plan; adapts on retry
+  node_retrieve          — vector search using the retrieval plan
+  node_rerank            — cross-encoder rerank + context expansion (layout granularity only)
+  node_sufficiency_check — DSPy: assess whether context is sufficient to answer
+  node_generate          — DSPy: generate cited answer with multimodal evidence
+  node_validate          — DSPy: verify answer is grounded in retrieved evidence
+
+Routing:
+  route_after_sufficiency — loops back to planner on failure (max 2 retries → 3 attempts total)
+  route_after_validation  — loops back to generator on failure (max 1 retry → 2 attempts total)
+"""
+
 from __future__ import annotations
 
-import base64
-
-import anthropic
 import chromadb
 
-from src.agent.dspy_modules import analyze_query, check_sufficiency
-from src.agent.image_store import image_store
+from src.agent.dspy_modules import (
+    _chunk_images,
+    _format_context,
+    analyze_query,
+    check_sufficiency,
+    generate_answer,
+    validate_answer,
+)
 from src.agent.state import RAGState
-from src.config import ANTHROPIC_API_KEY, CHROMA_PATH, CLAUDE_MODEL
-from src.retrieval.retriever import retrieve
+from src.config import CHROMA_PATH, COLLECTION_LAYOUTS, TOP_K_LAYOUTS
+from src.retrieval.reranker import get_reranker
+from src.retrieval.retriever import _expand_context, retrieve_candidates
 
-_chroma: chromadb.ClientAPI | None = None
-_anthropic: anthropic.Anthropic | None = None
+_chroma_client: chromadb.ClientAPI | None = None
 
 
 def _get_chroma() -> chromadb.ClientAPI:
-    global _chroma
-    if _chroma is None:
-        _chroma = chromadb.PersistentClient(path=CHROMA_PATH)
-    return _chroma
+    global _chroma_client
+    if _chroma_client is None:
+        _chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
+    return _chroma_client
 
 
-def _get_anthropic() -> anthropic.Anthropic:
-    global _anthropic
-    if _anthropic is None:
-        _anthropic = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-    return _anthropic
-
-
-def _format_context(chunks: list[dict]) -> str:
-    parts = []
-    for c in chunks:
-        cid = c.get("chunk_id", "unknown")
-        text = c.get("document") or c.get("text_for_generation") or ""
-        el_type = c.get("element_type", "")
-        parts.append(f"[{cid}] ({el_type})\n{text}")
-    return "\n\n---\n\n".join(parts)
-
-
-def _build_multimodal_content(question: str, chunks: list[dict]) -> list[dict]:
-    """
-    Build Anthropic message content blocks. For image/table chunks, attach
-    the original image alongside the text description so Claude can reason
-    directly from the visual. Text chunks are passed as plain text blocks.
-    """
-    content: list[dict] = [
-        {"type": "text", "text": f"Answer the following question using only the provided context. "
-                                  f"Cite the chunk IDs (e.g. [chunk_id]) that support your answer.\n\n"
-                                  f"Question: {question}\n\nContext:"}
-    ]
-
-    for chunk in chunks:
-        cid = chunk.get("chunk_id", "unknown")
-        text = chunk.get("document") or chunk.get("text_for_generation") or ""
-        el_type = chunk.get("element_type", "")
-
-        content.append({"type": "text", "text": f"\n\n[{cid}] ({el_type}):"})
-
-        image_bytes = image_store.get_for_chunk(chunk)
-        if image_bytes:
-            content.append({
-                "type": "image",
-                "source": {
-                    "type": "base64",
-                    "media_type": "image/jpeg",
-                    "data": base64.standard_b64encode(image_bytes).decode("utf-8"),
-                },
-            })
-
-        if text:
-            content.append({"type": "text", "text": text})
-
-    content.append({
-        "type": "text",
-        "text": "\n\nProvide a concise answer and list the cited chunk IDs on a final line "
-                "prefixed with 'Cited:' (comma-separated)."
-    })
-    return content
-
-
-def _parse_cited_chunks(raw: str) -> tuple[str, list[str]]:
-    """Split the model response into answer text and cited chunk IDs."""
-    lines = raw.strip().splitlines()
-    cited: list[str] = []
-    answer_lines: list[str] = []
-    for line in lines:
-        if line.strip().lower().startswith("cited:"):
-            cited = [c.strip() for c in line.split(":", 1)[1].split(",") if c.strip()]
-        else:
-            answer_lines.append(line)
-    return "\n".join(answer_lines).strip(), cited
-
-
-def node_analyze_query(state: RAGState) -> dict:
-    result = analyze_query(question=state["question"])
+def node_query_analyzer(state: RAGState) -> dict:
+    """Classify query and produce retrieval plan; increments retry_count when replanning."""
+    insufficiency_reason = state.get("insufficiency_reason") or ""
+    result = analyze_query(
+        question=state["question"],
+        insufficiency_reason=insufficiency_reason,
+    )
+    # table/figure questions always need a specific layout element — force layout granularity
+    # regardless of what the planner output; page granularity is only valid for broad
+    # aggregation questions (text/mixed modality)
+    granularity = result.granularity
+    if result.modality in ("table", "figure"):
+        granularity = "layout"
     return {
         "modality": result.modality,
-        "is_multi_hop": result.is_multi_hop,
-        "retrieval_strategy": result.retrieval_strategy,
+        "granularity": granularity,
         "rewritten_query": result.rewritten_query,
+        "top_k": max(5, min(20, int(result.top_k))),
+        # Increment only on replanning (non-empty reason means a prior attempt failed)
+        "retry_count": (state.get("retry_count") or 0) + (1 if insufficiency_reason else 0),
     }
 
 
 def node_retrieve(state: RAGState) -> dict:
-    chroma = _get_chroma()
+    """Run vector search using the retrieval plan; fetches 2× top_k for reranker headroom."""
+    top_k = state.get("top_k") or TOP_K_LAYOUTS
+    candidates = retrieve_candidates(
+        query=state.get("rewritten_query") or state["question"],
+        chroma=_get_chroma(),
+        granularity=state.get("granularity") or "layout",
+        modality=state.get("modality") or "",
+        top_k=top_k * 2,
+    )
+    return {"candidate_chunks": candidates}
+
+
+def node_rerank(state: RAGState) -> dict:
+    """Cross-encoder rerank candidates; expand prev/next context for layout granularity."""
+    candidates = state.get("candidate_chunks") or []
     query = state.get("rewritten_query") or state["question"]
-    strategy = state.get("retrieval_strategy") or "hierarchical"
+    top_k = state.get("top_k") or TOP_K_LAYOUTS
 
-    if state.get("retry_count", 0) > 0:
-        strategy = "hierarchical"
+    reranked = get_reranker().rerank(query, candidates, top_k=min(top_k, len(candidates)))
 
-    chunks, page_ids = retrieve(query, chroma, strategy=strategy)
+    if state.get("granularity") != "page":
+        layouts_col = _get_chroma().get_collection(COLLECTION_LAYOUTS)
+        reranked = _expand_context(layouts_col, reranked)
+
     return {
-        "retrieved_chunks": chunks,
-        "candidate_page_ids": page_ids,
+        "reranked_chunks": reranked,
+        "retrieved_chunks": reranked,  # accumulated via _safe_add dedup reducer
     }
 
 
-def node_assess_sufficiency(state: RAGState) -> dict:
-    context = _format_context(state["retrieved_chunks"])
-    result = check_sufficiency(question=state["question"], context=context)
-    return {"is_sufficient": result.is_sufficient}
-
-
-def node_generate_answer(state: RAGState) -> dict:
-    client = _get_anthropic()
-    content = _build_multimodal_content(state["question"], state["retrieved_chunks"])
-    response = client.messages.create(
-        model=CLAUDE_MODEL,
-        max_tokens=1024,
-        messages=[{"role": "user", "content": content}],
+def node_sufficiency_check(state: RAGState) -> dict:
+    """Assess whether reranked chunks are sufficient to answer the question."""
+    result = check_sufficiency(
+        question=state["question"],
+        context=_format_context(state.get("reranked_chunks") or []),
     )
-    raw = response.content[0].text
-    answer, cited = _parse_cited_chunks(raw)
-    return {"answer": answer, "cited_chunk_ids": cited}
-
-
-def node_expand_retrieval(state: RAGState) -> dict:
-    broadened = f"{state['question']} {state.get('rewritten_query', '')}".strip()
     return {
-        "rewritten_query": broadened,
-        "retrieval_strategy": "hierarchical",
-        "retry_count": state.get("retry_count", 0) + 1,
+        "is_sufficient": result.is_sufficient,
+        "insufficiency_reason": "" if result.is_sufficient else result.insufficiency_reason,
+    }
+
+
+def node_generate(state: RAGState) -> dict:
+    """Generate a cited answer from reranked evidence; incorporates validation_feedback on retry."""
+    chunks = state.get("reranked_chunks") or []
+    result = generate_answer(
+        question=state["question"],
+        context=_format_context(chunks),
+        images=_chunk_images(chunks),
+        validation_feedback=state.get("validation_feedback") or "",
+    )
+    cited = result.cited_chunk_ids if isinstance(result.cited_chunk_ids, list) else []
+    return {"answer": result.answer, "cited_chunk_ids": cited}
+
+
+def node_validate(state: RAGState) -> dict:
+    """Validate that the generated answer is grounded in the retrieved evidence."""
+    chunks = state.get("reranked_chunks") or []
+    result = validate_answer(
+        question=state["question"],
+        answer=state.get("answer") or "",
+        context=_format_context(chunks),
+        images=_chunk_images(chunks),
+    )
+    return {
+        "is_validated": result.is_valid,
+        "validation_feedback": "" if result.is_valid else result.feedback,
+        "validation_attempts": (state.get("validation_attempts") or 0) + 1,
     }
 
 
 def route_after_sufficiency(state: RAGState) -> str:
+    """Loop to planner if insufficient (max 2 retries = 3 total attempts), else generate."""
     if state.get("is_sufficient"):
         return "generate"
-    if state.get("retry_count", 0) >= 1:
+    if (state.get("retry_count") or 0) >= 2:
         return "generate"
-    return "expand"
+    return "replan"
+
+
+def route_after_validation(state: RAGState) -> str:
+    """Loop to generator if invalid (max 1 retry = 2 total attempts), else end."""
+    if state.get("is_validated"):
+        return "end"
+    if (state.get("validation_attempts") or 0) >= 2:
+        return "end"
+    return "regenerate"

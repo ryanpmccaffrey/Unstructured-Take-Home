@@ -1,13 +1,20 @@
 """
 Chunking pipeline. Produces Tier 1 (layout) and Tier 2 (page) chunks.
 
-Tier 1 algorithm per page:
-  - Walk layout elements in layout_id order
-  - Accumulate consecutive text/equation rows into a merged chunk until
-    MERGE_TOKEN_THRESHOLD is reached or a non-text element is encountered
-  - Figures and tables are always standalone chunks
-  - Each chunk gets: prev/next pointers, section_heading, page_position
-  - Bridge chunks are emitted for every consecutive page pair
+Tier 1 algorithm — one chunk per layout element:
+  - Each layout element (paragraph, figure, table, equation) becomes its own chunk.
+    The document parser has already segmented at paragraph granularity; merging
+    would lower embedding precision and hurt IoU-based layout recall.
+  - section_heading tracks the most recent short (≤ HEADING_MAX_TOKENS) text element
+    seen on the page — stored as metadata on subsequent chunks, not merged into them.
+  - prev/next pointers form a linked list within each page for context expansion.
+  - Bridge chunks are emitted between consecutive pages using the full text of the
+    last prose element on page N and the full text of the first prose element on
+    page N+1. Whole elements are used rather than fixed token slices so that bridge
+    text is always semantically complete (no mid-sentence cuts).
+  - One metadata chunk per document (element_type="metadata") synthesised from the
+    first page's VLM description — captures title, author, and document-level context
+    that metadata questions need.
 
 Tier 2: one chunk per page using pages_df.vlm_text (holistic VLM description).
 """
@@ -18,26 +25,18 @@ from dataclasses import dataclass, field
 import pandas as pd
 import tiktoken
 
-from src.config import BRIDGE_OVERLAP_TOKENS, HEADING_MAX_TOKENS, MERGE_TOKEN_THRESHOLD
+from src.config import HEADING_MAX_TOKENS
 
 _enc = tiktoken.get_encoding("cl100k_base")
 
 
 def _count_tokens(text: str) -> int:
+    """Return the cl100k token count for the given text."""
     return len(_enc.encode(text or ""))
 
 
-def _first_n_tokens(text: str, n: int) -> str:
-    tokens = _enc.encode(text or "")
-    return _enc.decode(tokens[:n])
-
-
-def _last_n_tokens(text: str, n: int) -> str:
-    tokens = _enc.encode(text or "")
-    return _enc.decode(tokens[-n:])
-
-
 def _page_position(bbox: list[float], page_size: list[float]) -> str:
+    """Classify vertical position of a bbox as top / middle / bottom within its page."""
     if not bbox or not page_size:
         return "unknown"
     y_center = (bbox[1] + bbox[3]) / 2
@@ -63,6 +62,7 @@ def _text_for_element(row: pd.Series) -> str:
 
 
 def _is_heading(text: str) -> bool:
+    """Return True if text is short enough to be treated as a section heading."""
     return 0 < _count_tokens(text) <= HEADING_MAX_TOKENS
 
 
@@ -75,7 +75,6 @@ class Chunk:
     layout_ids: list[int]
     element_type: str
     text_for_embedding: str
-    text_for_generation: str
     image_path: str | None
     page_image_path: str | None
     prev_chunk_id: str | None = None
@@ -86,6 +85,7 @@ class Chunk:
     page_ids: list[int] = field(default_factory=list)
 
     def to_dict(self) -> dict:
+        """Serialise to a flat dict suitable for ChromaDB metadata storage."""
         return {
             "chunk_id": self.chunk_id,
             "doc_name": self.doc_name,
@@ -94,7 +94,6 @@ class Chunk:
             "layout_ids": json.dumps(self.layout_ids),
             "element_type": self.element_type,
             "text_for_embedding": self.text_for_embedding,
-            "text_for_generation": self.text_for_generation,
             "image_path": self.image_path or "",
             "page_image_path": self.page_image_path or "",
             "prev_chunk_id": self.prev_chunk_id or "",
@@ -122,54 +121,36 @@ def chunk_document(
 
     all_tier1: list[Chunk] = []
     tier2_chunks: list[dict] = []
-    prev_page_tail: str = ""  # last BRIDGE_OVERLAP_TOKENS of the previous page
+
+    # ── Metadata chunk (one per document) ──────────────────────────────────────
+    # Synthesised from the first page's VLM description. Captures title, authors,
+    # and document-level context that metadata questions need but layout elements
+    # don't surface.
+    first_page = doc_pages.iloc[0] if len(doc_pages) > 0 else None
+    if first_page is not None:
+        first_vlm = str(first_page.get("vlm_text") or first_page.get("ocr_text") or "")
+        meta_text = f"Document: {doc_name}\nDomain: {domain}\n\n{first_vlm}"
+        all_tier1.append(Chunk(
+            chunk_id=f"{doc_name}_metadata",
+            doc_name=doc_name,
+            domain=domain,
+            page_id=0,
+            layout_ids=[],
+            element_type="metadata",
+            text_for_embedding=meta_text,
+            image_path=str(first_page.get("image_path") or "") or None,
+            page_image_path=str(first_page.get("image_path") or "") or None,
+        ))
+
+    prev_page_prose_tail: str = ""  # last BRIDGE_OVERLAP_TOKENS of last prose on previous page
 
     for _, page_row in doc_pages.iterrows():
         page_id = int(page_row["passage_id"])
         page_image_path = str(page_row.get("image_path") or "")
-        page_layouts = doc_layouts[doc_layouts["page_id"] == page_id].sort_values(
-            "layout_id"
-        )
+        page_layouts = doc_layouts[doc_layouts["page_id"] == page_id].sort_values("layout_id")
 
         page_chunks: list[Chunk] = []
-        chunk_counter = 0
-
-        # ── accumulator for merging consecutive text/equation elements ──
-        acc_texts: list[str] = []
-        acc_layout_ids: list[int] = []
-        acc_bboxes: list[list[float]] = []
-        acc_page_sizes: list[list[float]] = []
         last_heading: str = ""
-
-        def flush_text_acc() -> None:
-            nonlocal chunk_counter, last_heading
-            if not acc_texts:
-                return
-            merged = "\n".join(acc_texts)
-            first_bbox = acc_bboxes[0] if acc_bboxes else []
-            first_ps = acc_page_sizes[0] if acc_page_sizes else []
-            cid = f"{doc_name}_page{page_id}_chunk{chunk_counter}"
-            chunk_counter += 1
-            page_chunks.append(
-                Chunk(
-                    chunk_id=cid,
-                    doc_name=doc_name,
-                    domain=domain,
-                    page_id=page_id,
-                    layout_ids=list(acc_layout_ids),
-                    element_type="text",
-                    text_for_embedding=merged,
-                    text_for_generation=merged,
-                    image_path=None,
-                    page_image_path=page_image_path,
-                    page_position=_page_position(first_bbox, first_ps),
-                    section_heading=last_heading,
-                )
-            )
-            acc_texts.clear()
-            acc_layout_ids.clear()
-            acc_bboxes.clear()
-            acc_page_sizes.clear()
 
         for _, el in page_layouts.iterrows():
             el_type = el.get("type", "text")
@@ -180,58 +161,42 @@ def chunk_document(
             page_size = list(ps_raw) if ps_raw is not None else []
             layout_id = int(el["layout_id"])
 
+            if el_type in ("text", "equation") and _is_heading(text):
+                last_heading = text.strip()
+
+            img_path = str(el.get("image_path") or "") or None
             if el_type in ("text", "equation"):
-                if _is_heading(text):
-                    last_heading = text.strip()
+                img_path = None  # text elements have no meaningful image
 
-                acc_texts.append(text)
-                acc_layout_ids.append(layout_id)
-                acc_bboxes.append(bbox)
-                acc_page_sizes.append(page_size)
-
-                if _count_tokens("\n".join(acc_texts)) >= MERGE_TOKEN_THRESHOLD:
-                    flush_text_acc()
-            else:
-                # flush pending text before emitting non-text chunk
-                flush_text_acc()
-
-                img_path = str(el.get("image_path") or "")
-                cid = f"{doc_name}_page{page_id}_chunk{chunk_counter}"
-                chunk_counter += 1
-                page_chunks.append(
-                    Chunk(
-                        chunk_id=cid,
-                        doc_name=doc_name,
-                        domain=domain,
-                        page_id=page_id,
-                        layout_ids=[layout_id],
-                        element_type=el_type,
-                        text_for_embedding=text,
-                        text_for_generation=text,
-                        image_path=img_path if img_path else None,
-                        page_image_path=page_image_path,
-                        page_position=_page_position(bbox, page_size),
-                        section_heading=last_heading,
-                    )
-                )
-
-        flush_text_acc()
+            page_chunks.append(Chunk(
+                chunk_id=f"{doc_name}_page{page_id}_layout{layout_id}",
+                doc_name=doc_name,
+                domain=domain,
+                page_id=page_id,
+                layout_ids=[layout_id],
+                element_type=el_type,
+                text_for_embedding=text,
+                image_path=img_path,
+                page_image_path=page_image_path,
+                page_position=_page_position(bbox, page_size),
+                section_heading=last_heading,
+            ))
 
         # ── assign prev/next pointers ──
         for i, c in enumerate(page_chunks):
             c.prev_chunk_id = page_chunks[i - 1].chunk_id if i > 0 else None
-            c.next_chunk_id = (
-                page_chunks[i + 1].chunk_id if i < len(page_chunks) - 1 else None
-            )
+            c.next_chunk_id = page_chunks[i + 1].chunk_id if i < len(page_chunks) - 1 else None
 
         # ── bridge chunk with previous page ──
-        if prev_page_tail and page_chunks:
-            page_head = _first_n_tokens(
-                page_chunks[0].text_for_embedding, BRIDGE_OVERLAP_TOKENS
-            )
-            bridge_text = prev_page_tail + " " + page_head
+        # Use whole prose elements (text/equation) rather than fixed token slices so
+        # bridge text is always a complete semantic unit with no mid-sentence cuts.
+        # figure/table VLM descriptions are excluded — they don't carry narrative
+        # continuity across page breaks.
+        prose_chunks = [c for c in page_chunks if c.element_type in ("text", "equation")]
+        if prev_page_prose_tail and prose_chunks:
+            bridge_text = prev_page_prose_tail + "\n" + prose_chunks[0].text_for_embedding
             prev_page_id = page_id - 1
-            bridge_chunk = Chunk(
+            all_tier1.append(Chunk(
                 chunk_id=f"{doc_name}_bridge_{prev_page_id}-{page_id}",
                 doc_name=doc_name,
                 domain=domain,
@@ -239,35 +204,26 @@ def chunk_document(
                 layout_ids=[],
                 element_type="bridge",
                 text_for_embedding=bridge_text,
-                text_for_generation=bridge_text,
                 image_path=None,
                 page_image_path=page_image_path,
                 page_ids=[prev_page_id, page_id],
-            )
-            all_tier1.append(bridge_chunk)
+            ))
 
-        # update tail for next page's bridge
-        if page_chunks:
-            prev_page_tail = _last_n_tokens(
-                page_chunks[-1].text_for_embedding, BRIDGE_OVERLAP_TOKENS
-            )
-        else:
-            prev_page_tail = ""
+        # store full last prose element for the next page's bridge
+        prev_page_prose_tail = prose_chunks[-1].text_for_embedding if prose_chunks else ""
 
         all_tier1.extend(page_chunks)
 
         # ── Tier 2 page chunk ──
         vlm_text = str(page_row.get("vlm_text") or page_row.get("ocr_text") or "")
-        tier2_chunks.append(
-            {
-                "chunk_id": f"{doc_name}_page_{page_id}",
-                "doc_name": doc_name,
-                "domain": domain,
-                "page_id": page_id,
-                "text_for_embedding": vlm_text,
-                "image_path": page_image_path,
-                "child_chunk_ids": json.dumps([c.chunk_id for c in page_chunks]),
-            }
-        )
+        tier2_chunks.append({
+            "chunk_id": f"{doc_name}_page_{page_id}",
+            "doc_name": doc_name,
+            "domain": domain,
+            "page_id": page_id,
+            "text_for_embedding": vlm_text,
+            "image_path": page_image_path,
+            "child_chunk_ids": json.dumps([c.chunk_id for c in page_chunks]),
+        })
 
     return all_tier1, tier2_chunks

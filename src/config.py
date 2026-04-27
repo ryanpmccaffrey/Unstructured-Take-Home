@@ -12,14 +12,15 @@ CHROMA_PATH = str(ROOT / "chroma_db")
 
 SUBSET_SIZE = 5
 TOP_K_PAGES = 10
-TOP_K_LAYOUTS = 5
-MERGE_TOKEN_THRESHOLD = 400
+TOP_K_LAYOUTS = 5       # final layout chunks returned after re-ranking
+TOP_K_RETRIEVE = 10     # initial layout candidates fetched before re-ranking
 HEADING_MAX_TOKENS = 10
-BRIDGE_OVERLAP_TOKENS = 100
 
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 
-EMBED_MODEL = "all-MiniLM-L6-v2"  # used by Chroma's DefaultEmbeddingFunction
+EMBED_MODEL = "bge-base-en-v1.5"  # Xenova ONNX quantized, loaded via onnxruntime
+BGE_ONNX_DIR = str(ROOT / "bge_base_onnx_cache")
+RERANKER_ONNX_DIR = str(ROOT / "bge_reranker_base_cache")
 CLAUDE_MODEL = "claude-sonnet-4-6"
 
 COLLECTION_LAYOUTS = "mmdocir_layouts"
