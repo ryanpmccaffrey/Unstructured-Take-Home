@@ -302,16 +302,16 @@ All results on the 5-document, 29-question baseline set:
 
 | Configuration | Page R@5 | Layout R@5 | Cited Page | Cited Layout | LLM Judge | Exact Contain. |
 |---|---|---|---|---|---|---|
-| + ReAct agent (ms-marco reranker) | 82.8% | 58.6% | 89.7% | 79.3% | 75.9% | 51.7% |
-| + search_pages tool, 8 turns | 79.3% | 58.6% | 93.1% | 79.3% | 86.2% | 51.7% |
-| + BGE-reranker-base, 8 turns | 79.3% | 58.6% | 96.6% | 82.8% | 82.8% | 51.7% |
-| **Planner-Executor (LangGraph + DSPy)** | **89.7%** | **62.1%** | **96.6%** | **65.5%** | **79.3%** | **55.2%** |
+| ReAct Agent | 79.3% | 58.6% | 96.6% | **82.8%** | **82.8%** | 51.7% |
+| **Planner-Executor** | **89.7%** | **62.1%** | **96.6%** | 65.5% | 79.3% | **55.2%** |
 
 The biggest jump in **Page Recall** came from the Planner-Executor's query rewriting and adaptive retrieval — 79.3% → 89.7%. The biggest jump in **Layout Recall** (55.2% → 62.1%) came from element-level chunking. **Exact Containment** improved to a new best of 55.2%, reflecting the structured DSPy generation prompts.
 
 **On Cited Layout Grounding**: The Planner-Executor scores 65.5% vs the prior best of 82.8%. The gap is partly structural — the sufficiency check sometimes accepts page-level evidence as sufficient for questions that require a specific layout element, leading to page-chunk citations that can't be IoU-matched. Forcing `granularity=layout` for table/figure modalities recovered the initial 34.5% to 65.5%; further improvement would come from tightening the sufficiency check for visual modalities.
 
 **On Token F1 and Fuzzy Match**: Misleadingly low — ground-truth answers are short phrases while generated answers are full sentences. LLM Judge is the most meaningful quality indicator and aligns with MMDocRAG's evaluation approach.
+
+Overall, I believe the Planner-Executor routing approach is preferred over the ReAct approach because it achieves comparable retrieval and answer quality with lower expected token usage and latency.  
 
 **Per-modality breakdown** (latest run):
 
