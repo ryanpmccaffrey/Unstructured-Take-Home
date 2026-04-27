@@ -82,6 +82,14 @@ target/
 data/
 notebooks/
 chroma_db/
+results/
+bge_onnx_cache/
+bge_base_onnx_cache/
+bge_reranker_base_cache/
+cross_encoder_cache/
+eval_results.csv
+eval_summary.json
+ingest.log
 .DS_Store
 
 # IPython
